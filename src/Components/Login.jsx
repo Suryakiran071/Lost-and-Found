@@ -1,56 +1,85 @@
 import React, { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
+import { Link } from "react-router-dom";
+import { auth, provider, signInWithPopup } from "../firebase";
 
-const Login = () => {
+
+const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
-
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      localStorage.setItem("token", data.token);
-      setMessage("Login successful!");
-    } else {
-      setError(data.message);
-    }
+    alert(`Email: ${email}, Password: ${password}`);
   };
 
+  const handleGoogleSignup = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+  
+      const token = await user.getIdToken();
+      localStorage.setItem("token", token);
+  
+      alert(`Welcome, ${user.displayName}`);
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Google Sign-up error", err);
+      alert("Google Sign-up failed.");
+    }
+  };
+  
+
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
-      <form onSubmit={handleLogin} className="flex flex-col space-y-4">
-        <input
-          type="email"
-          placeholder="Email"
-          className="p-2 border rounded text-black"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="p-2 border rounded text-black"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-          Login
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-sm">
+        <h2 className="text-2xl font-bold mb-6 text-center text-white">Login</h2>
+        <form onSubmit={handleSignup} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-3 rounded bg-gray-700 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-3 rounded bg-gray-700 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded transition"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="text-center text-gray-400 mt-4 text-sm">
+          Not a user?{" "}
+          <Link to="/signup" className="text-blue-400 hover:underline">
+            Click here to Sign Up
+          </Link>
+        </p>
+
+        <div className="flex items-center my-6">
+          <div className="flex-grow h-px bg-gray-600" />
+          <span className="mx-3 text-gray-400 text-sm">or</span>
+          <div className="flex-grow h-px bg-gray-600" />
+        </div>
+
+        <button
+          onClick={handleGoogleSignup}
+          className="w-full flex items-center justify-center space-x-3 border border-gray-500 py-3 rounded text-white hover:bg-gray-700 transition"
+        >
+          <FcGoogle className="text-xl" />
+          <span>Sign in with Google</span>
         </button>
-      </form>
-      {error && <p className="text-red-500">{error}</p>}
-      {message && <p className="text-green-500">{message}</p>}
+      </div>
     </div>
   );
 };
 
-export default Login;
+export default Signup;
