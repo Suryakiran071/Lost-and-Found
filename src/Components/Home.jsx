@@ -4,7 +4,7 @@ import ReportItem from "./ReportItem";
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="min-h-screen bg-gradient-to-t from-black to-transparent text-white p-8">
       <div className="max-w-5xl mx-auto text-center">
         {/* Hero Section */}
         <h1 className="text-4xl md:text-5xl font-bold mb-4 mt-40 mb-11">
@@ -33,7 +33,7 @@ const Home = () => {
 
         {/* Footer Text */}
         <div className="mt-12 text-sm text-gray-500">
-          Found something that doesn't belong to you? Help return it to the right person. 🙌
+          Found something that doesn't belong to you? Help return it to the right person.
         </div>
       </div>
     </div>
